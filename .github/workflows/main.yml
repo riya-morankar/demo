@@ -1,0 +1,18 @@
+name: PR Merge Workflow
+
+on:
+  pull_request:
+    types: [closed] 
+jobs:
+  merge-check:
+    if: github.event.pull_request.merged == true  
+    runs-on: windows-10.0.22631
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Use checkout action to get the code
+
+      - name: Run your actions
+        run: |
+          echo "Pull Request was merged!"
+          # Add your custom actions here
