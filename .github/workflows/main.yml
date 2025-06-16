@@ -1,18 +1,29 @@
-name: PR Merge Workflow
+name: Generate Excel Sheet
 
 on:
   pull_request:
-    types: [closed] 
-jobs:
-  merge-check:
-    if: github.event.pull_request.merged == true  
-    runs-on: windows-10.0.22631
+    types: [closed]
 
+jobs:
+  generate-excel:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Use checkout action to get the code
+        uses: actions/checkout@v2
 
-      - name: Run your actions
+      - name: Install dependencies
         run: |
-          echo "Pull Request was merged!"
-          # Add your custom actions here
+          pip install openpyxl
+
+      - name: Generate Excel sheet
+        run: |
+          python generate_excel.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_EVENT: ${{ github.event }}
+
+      - name: Upload Excel sheet
+        uses: actions/upload-artifact@v2
+        with:
+          name: excel-sheet.xlsx
+          path: excel-sheet.xlsx
