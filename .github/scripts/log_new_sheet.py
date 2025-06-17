@@ -15,7 +15,7 @@ title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
 
-action = "Merged" if pr.get("merged", {}).get("state") == "MERGED" else "Squashed"
+action = "Merged" if pr.get("merged") else "Squashed"
 comment = pr.get("body")
 merged_at = datetime.now().strftime("%Y-%m-%d")
 changes = pr.get("changes")
