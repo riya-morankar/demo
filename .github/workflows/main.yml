@@ -3,10 +3,11 @@ name: Generate Excel Sheet
 on:
   pull_request:
     types: [closed]
-
-permissions:
-  contents:write
-
+    
+permissions: 
+  contents: 
+    write
+    
 jobs:
   generate-excel:
     if: github.events.pull_request.merged == true
