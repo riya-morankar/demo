@@ -1,3 +1,4 @@
+
 import json
 import os
 from datetime import datetime
@@ -13,7 +14,7 @@ if not pr:
 req_id = pr.get("number")
 title = pr.get("title")
 author = pr.get("user", {}).get("login")
-source_target = f"from {pr.get('head', {}).get('ref')} to {pr.get('base', {}).get('ref')}"
+source_target = f"{pr.get('head', {}).get('ref')} to {pr.get('base', {}).get('ref')}"
 
 approvers_list = [r.get("login") for r in pr.get("requested_reviewers", [])]
 approvers = ", ".join(approvers_list) if approvers_list else "N/A"
