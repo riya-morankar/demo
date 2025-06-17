@@ -27,6 +27,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
           git add new_sheet.xlsx
           git commit -m "Update new sheet log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"
           git push
