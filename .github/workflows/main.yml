@@ -4,26 +4,38 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+  contents:write
+
 jobs:
   generate-excel:
+    if: github.events.pull_request.merged == true
     runs-on: windows-latest
+    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install openpyxl
+      - name: install dependencies
+        run: pip install openpyxl
 
-      - name: Generate Excel sheet
+      - name : log PR info
+        run: python.github/scripts/generate_excel.py
+      
+      - name: Commit and push excel file
         run: |
-          python generate_excel.py
+          git config user.name "github-actiobs[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pull_requests.xlsx
+          git commit -m "Update PR log from #${{github.event.pull_request.number}}" || echo "No changes to commit"
+          git push
+          
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_EVENT: ${{ github.event }}
-
-      - name: Upload Excel sheet
-        uses: actions/upload-artifact@v4
-        with:
-          name: excel-sheet.xlsx
-          path: excel-sheet.xlsx
