@@ -13,7 +13,7 @@ if not pr:
 req_id = pr.get("number")
 title = pr.get("title")
 author = pr.get("user", {}).get("login")
-source_target = f"{pr.get('head', {}).get('ref')} → {pr.get('base', {}).get('ref')}"
+source_target = f"{from pr.get('head', {}).get('ref')} to {pr.get('base', {}).get('ref')}"
 
 approvers_list = [r.get("login") for r in pr.get("requested_reviewers", [])]
 approvers = ", ".join(approvers_list) if approvers_list else "N/A"
@@ -28,7 +28,7 @@ if os.path.exists(excel_file):
 else:
     wb = Workbook()
     ws = wb.active
-    ws.append(["Req ID", "Title", "Author", "Approvers", "Source → Target", "Date"])
+    ws.append(["ID", "Title", "Author", "Approvers", "Source / Target", "Date"])
 
 ws.append([req_id, title, author, approvers, source_target, merged_date])
 
