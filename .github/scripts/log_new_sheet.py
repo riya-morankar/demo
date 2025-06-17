@@ -14,7 +14,6 @@ req_id = pr.get("number")
 title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
-source_target = f"{source_branch} to {target_branch}"
 
 action = "Merged" if pr.get("merged", {}).get("state") == "MERGED" else "Squashed"
 comment = pr.get("body")
