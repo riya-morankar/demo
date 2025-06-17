@@ -26,7 +26,7 @@ jobs:
         run: pip install openpyxl
 
       - name: log PR info
-        run: python .github/scripts/log_pr.py
+        run: python .github/scripts/generate_excel.py
 
       - name: Commit and push excel file
         run: |
