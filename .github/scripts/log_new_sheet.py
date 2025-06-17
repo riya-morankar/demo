@@ -14,13 +14,16 @@ req_id = pr.get("number")
 title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
-target_branch = pr.get("base", {}).get("ref")
 source_target = f"{source_branch} to {target_branch}"
 
-action = "New Action"
-comment = "New Comment"
-merged_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+action = "Merged" if pr.get("merged", {}).get("state") == "MERGED" else "Squashed"
+comment = pr.get("body")
+merged_at = datetime.now().strftime("%Y-%m-%d")
+changes = pr.get("changes")
+if changes:
+    change_id = changes[0].get("change_id")
+else:
+    change_id = "N/A"
 excel_file = "new_sheet.xlsx"
 if os.path.exists(excel_file):
     wb = load_workbook(excel_file)
@@ -28,9 +31,9 @@ if os.path.exists(excel_file):
 else:
     wb = Workbook()
     ws = wb.active
-    ws.append(["Source Branch", "Author", "Action", "Comment", "Date"])
+    ws.append(["Source Branch", "Author", "Action", "Comment", "Date", "Change ID"])
 
-ws.append([source_branch, author, action, comment, merged_at])
+ws.append([source_branch, author, action, comment, merged_at, change_id])
 
 wb.save(excel_file)
 print(f"Logged new sheet")
