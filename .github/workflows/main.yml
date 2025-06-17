@@ -1,39 +1,33 @@
-name: Generate Excel Sheet
-
+name: Log PRs to Excel
 on:
   pull_request:
     types: [closed]
+    
 permissions:
   contents: write  
-  
 jobs:
-  generate-excel:
+  log-pr:
     if: github.event.pull_request.merged == true
     runs-on: windows-latest
-    
     steps:
-      - name: Checkout code
+      - name: Checkout code (with full history)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
-      - name: Set up python
+          fetch-depth: 0  # important to allow commits
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
-      - name: install dependencies
+      - name: Install dependencies
         run: pip install openpyxl
-
-      - name: log PR info
-        run: python .github/scripts/generate_excel.py
-
-      - name: Commit and push excel file
+      - name: Log PR info
+        run: python .github/scripts/log_pr.py
+      - name: Commit and push Excel file
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config push.default matching
           git add pull_requests.xlsx
-          git commit -m "Update PR log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"          git push
+          git commit -m "Update PR log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
