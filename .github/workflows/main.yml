@@ -27,11 +27,11 @@ jobs:
         run: pip install openpyxl
 
       - name: log PR info
-        run: python -c "import github; print(github.get_pull_request_info())"
+        run: python .github/scripts/generate_excel.py
 
       - name: Commit and push excel file
         run: |
-          git config user.name "github-actiobs[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config push.default matching
           git add pull_requests.xlsx
