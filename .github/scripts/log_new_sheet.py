@@ -16,7 +16,7 @@ author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
 
 # action = "Merged" if pr.get("merged") else "Squashed"
-action = "Merged" if pr.get("merged") and not pr.get("squash") else "Squashed"
+action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
 
 # action = "Merged" if pr.get("merged") else "Squashed"
 # if pr.get("squash"):
