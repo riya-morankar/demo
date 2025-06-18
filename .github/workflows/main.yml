@@ -26,9 +26,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
+          git pull origin main
           git add pull_reqs.xlsx
           git commit -m "Update PR log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"
-          git push
+          git push origin main --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
