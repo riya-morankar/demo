@@ -18,7 +18,7 @@ source_branch = pr.get("head", {}).get("ref")
 action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
 
 comment = pr.get("body")
-if !comment:
+if not comment:
     comment="N/A"
 merged_at = datetime.now().strftime("%Y-%m-%d")
 
