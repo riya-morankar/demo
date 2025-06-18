@@ -39,6 +39,6 @@ else:
     ws.append(["Source Branch", "Author", "Action", "Comment", "Date", "Change ID"])
 
 ws.append([source_branch, author, action, comment, merged_at, change_id])
-
+print(source_branch, author, action, comment, merged_at, change_id)
 wb.save(excel_file)
 print(f"Logged new sheet")
