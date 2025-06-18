@@ -18,12 +18,9 @@ source_branch = pr.get("head", {}).get("ref")
 action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
 
 comment = pr.get("body")
+if !comment:
+    comment="N/A"
 merged_at = datetime.now().strftime("%Y-%m-%d")
-# changes = pr.get("changes")
-# if changes:
-#     change_id = changes[0].get("change_id")
-# else:
-#     change_id = "N/A"
 
 merge_commit_sha = pr.get("merge_commit_sha")
 if merge_commit_sha:
