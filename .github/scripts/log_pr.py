@@ -33,4 +33,5 @@ else:
 ws.append([req_id, title, author, approvers, source_target, merged_date])
 
 wb.save(excel_file)
+print(f"Writing data: {req_id}, {title}, {author}, {approvers}, {source_target}, {merged_date}")
 print(f"Logged PR #{req_id}")
