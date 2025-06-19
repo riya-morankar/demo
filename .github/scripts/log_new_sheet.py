@@ -15,15 +15,13 @@ req_id = pr.get("number")
 title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
-action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
+# action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
+action = "Merged" if not pr.get("squash") else "Squashed"
 
 comment = pr.get("body")
+if not comment:
+    comment="N/A"
 merged_at = datetime.now().strftime("%Y-%m-%d")
-# changes = pr.get("changes")
-# if changes:
-#     change_id = changes[0].get("change_id")
-# else:
-#     change_id = "N/A"
 
 merge_commit_sha = pr.get("merge_commit_sha")
 if merge_commit_sha:
@@ -41,6 +39,6 @@ else:
     ws.append(["Source Branch", "Author", "Action", "Comment", "Date", "Change ID"])
 
 ws.append([source_branch, author, action, comment, merged_at, change_id])
-
+print(source_branch, author, action, comment, merged_at, change_id)
 wb.save(excel_file)
 print(f"Logged new sheet")
