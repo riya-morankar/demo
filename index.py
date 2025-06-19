@@ -25,3 +25,5 @@ print("2:00")
 print("3:03")
 print("3:39")
 print("3:42")
+print("10:15")
+
