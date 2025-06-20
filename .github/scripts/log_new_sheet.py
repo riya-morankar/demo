@@ -16,15 +16,10 @@ title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
 
-if pr.merged:
-    merge_commit_sha = pr.merge_commit_sha
-    pr_commits = [commit.sha for commit in pr.get_commits()]
-    if merge_commit_sha in pr_commits:
-         action = "Squashed"
-    else:
-         action = "Merged"
+if pr.get("merge_method") == "squash":
+    action = "Squashed"
 else:
-         action = "N/A"
+    action = "Merged"
 
 # action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
 # action = "Merged" if not pr.get("squash") else "Squashed"
