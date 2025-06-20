@@ -16,10 +16,15 @@ title = pr.get("title")
 author = pr.get("user", {}).get("login")
 source_branch = pr.get("head", {}).get("ref")
 
-if pr.get("merge_method") == "squash":
+if event.get("action") == "closed" and event.get("pull_request", {}).get("merge_method") == "squash":
     action = "Squashed"
 else:
     action = "Merged"
+
+# if pr.get("merge_method") == "squash":
+#     action = "Squashed"
+# else:
+#     action = "Merged"
 
 # action = "Merged" if pr.get("merge_status") == "MERGED" else "Squashed"
 # action = "Merged" if not pr.get("squash") else "Squashed"
