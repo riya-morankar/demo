@@ -33,3 +33,5 @@ print("10:00")
 print("hey!")
 print("Okay")
 print("11:26")
+a=10
+b=5
