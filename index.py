@@ -29,9 +29,4 @@ print("10:15")
 print("10:57")
 print("4:17")
 print("Hi")
-print("10:00")
-print("hey!")
-print("Okay")
-print("11:26")
-a=10
-b=5
+print("Sq")
