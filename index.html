@@ -1,129 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>GitHub PR Tracker Input Generator</title>
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-    }
-    label {
-      font-weight: bold;
-    }
-    select, input {
-      margin: 10px 0;
-      width: 300px;
-      padding: 6px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-    }
-    .output {
-      margin-top: 30px;
-      white-space: pre-wrap;
-      background: #f7f7f7;
-      padding: 15px;
-      border-radius: 5px;
-    }
-  </style>
+    <title>GitHub PR Tracker Input Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group select {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group button {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #3e8e41;
+        }
+        .download-button {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .download-button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>GitHub PR Tracker Input Generator</h1>
+        <form>
+            <div class="form-group">
+                <label for="repos">Select repositories (multi-select):</label>
+                <select id="repos" name="repos" multiple>
+                    <!-- Repos will be populated from manifest.yaml file -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            <div class="form-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            <div class="form-group">
+                <button type="button" id="generate-yaml">Generate YAML</button>
+            </div>
+            <div id="yaml-output" style="display: none;">
+                <pre id="yaml-code"></pre>
+                <button type="button" id="download-yaml" class="download-button">Download workflow_input.yaml</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Load manifest.yaml file
+        fetch('config/gss_hvs_git_repos.yaml')
+            .then(response => response.json())
+            .then(data => {
+                // Populate repos select box
+                const reposSelect = document.getElementById('repos');
+                data.repos.forEach(repo => {
+                    const option = document.createElement('option');
+                    option.value = repo;
+                    option.text = repo;
+                    reposSelect.add(option);
+                });
+            });
 
-  <h2>GitHub PR Tracker Input Generator</h2>
-
-  <label for="repoSelect">Select Repositories:</label><br />
-  <select id="repoSelect" multiple size="8"></select><br />
-
-  <input type="date" id="startDate" />
-  <input type="date" id="endDate" /><br />
-
-  <button onclick="generateYAML()">Generate YAML</button>
-
-  <div class="output" id="yamlOutput"></div>
-  <a id="downloadLink" style="display:none" download="workflow_input.yaml">Download YAML</a>
-
-  <script>
-    const repoSelect = document.getElementById("repoSelect");
-    const manifestURL = "config/gss_hvs_git_repos.yaml";
-
-    // Add "All" option
-    const addAllOption = () => {
-      const option = document.createElement("option");
-      option.value = "__all__";
-      option.text = "[Select All]";
-      repoSelect.appendChild(option);
-    };
-
-    const loadManifest = async () => {
-      const res = await fetch(manifestURL);
-      const text = await res.text();
-      const manifest = jsyaml.load(text);
-      const repos = Object.keys(manifest.repos || {});
-      addAllOption();
-      repos.forEach(repo => {
-        const option = document.createElement("option");
-        option.value = repo;
-        option.text = repo;
-        repoSelect.appendChild(option);
-      });
-    };
-
-    repoSelect.addEventListener("change", () => {
-      const selected = Array.from(repoSelect.selectedOptions).map(o => o.value);
-      console.log(selected)
-      if (selected.includes("__all__")) {
-        for (let i = 0; i < repoSelect.options.length; i++) {
-          if (repoSelect.options[i].value !== "__all__") {
-            repoSelect.options[i].selected = true;
-          }
-        }
-        repoSelect.options[0].selected = false; // unselect the "__all__"
-      }
-    });
-
-    function generateYAML() {
-      const selectedRepos = Array.from(repoSelect.selectedOptions).map(o => o.value);
-      console.log(selectedRepos);
-      const startDate = document.getElementById("startDate").value;
-      const endDate = document.getElementById("endDate").value;
-
-      if (selectedRepos.length === 0) {
-        alert("Please select at least one repo.");
-        return;
-      }
-
-      if (startDate === null || endDate === null) {
-        alert("Please select the dates.");
-        return;
-      }
-
-      if (startDate > endDate) {
-        alert("Start date must be earlier than end date.");
-        return;
-      }
-
-      const yamlObj = {
-        repos: selectedRepos.join(","),
-        start_date: startDate,
-        end_date: endDate
-      };
-
-      const yamlStr = jsyaml.dump(yamlObj);
-      document.getElementById("yamlOutput").textContent = yamlStr;
-
-      // download link
-      const blob = new Blob([yamlStr], { type: "text/yaml" });
-      const url = URL.createObjectURL(blob);
-      const link = document.getElementById("downloadLink");
-      link.href = url;
-      link.style.display = "inline-block";
-    }
-
-    loadManifest();
-  </script>
-
+        // Generate YAML code
+        document.getElementById("generate-yaml").addEventListener("click", function() {
+            var selectedRepos = document.getElementById("repos").value;
+            var startDate = document.getElementById("start-date").value;
+            var endDate = document.getElementById("end-date").value;
+            if (selectedRepos === "All") {
+                selectedRepos = ["repo1", "repo2", /* Add more repos here */];
+            }
+            var yamlData = {
+                "repos": selectedRepos.join(","),
+                "start_date": startDate,
+                "end_date": endDate
+            };
+            var outputPath = "workflow_input.yaml";
+            var yamlCode = JSON.stringify(yamlData, null, 4);
+            document.getElementById("yaml-code").innerHTML = yamlCode;
+            document.getElementById("yaml-output").style.display = "block";
+            var file = new Blob([yamlCode], {type: "text/yaml"});
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(file);
+            link.download = "workflow_input.yaml";
+            link.click();
+        });
+    </script>
 </body>
 </html>
