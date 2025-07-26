@@ -1,0 +1,17 @@
+repositories:
+#   # hvs:
+#   #   branch: '*'
+#   #   start_date: '*'
+#   #   end_date: '*'
+#   pgcp:
+#     branch: '*'
+#     start_date: '*'
+#     end_date: '*'
+  d:
+    branch: main
+    start_date: '2025-01-01'
+    end_date: '2026-01-01'
+  d2:
+    branch: main
+    start_date: '2025-01-01'
+    end_date: '2026-01-01'
