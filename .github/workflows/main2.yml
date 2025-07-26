@@ -1,13 +1,25 @@
 # After selecting repos of interest and the filtering conditions in workflow_input.yaml, run this workflow in actions.
 name: Generate Code review Document
 
-on: [workflow_dispatch, workflow_call, push]
+# on: [workflow_dispatch, workflow_call, push]
 # on:
 #   push:
 #     paths:
 #       - '**/workflow_input.yaml'
 #       - '**/git_repos.yaml'
-      
+
+on:
+  workflow_dispatch:
+    inputs:
+      input_folder:
+        description: "Choose input folder"
+        required: true
+        type: choice
+        options:
+          - gdd/hvs
+          - devops/common
+          - infra/azure
+
 permissions:
   pull-requests: read
   contents: read
@@ -16,6 +28,8 @@ permissions:
 jobs:
   build:
     uses: riya-morankar/demo2/.github/workflows/code_rev_doc.yml@main
+    with:
+      input_folder: ${{ github.event.inputs.input_folder }}
     secrets: inherit
 
 
