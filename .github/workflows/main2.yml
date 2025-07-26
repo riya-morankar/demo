@@ -1,35 +1,62 @@
-name: Log New Sheet to Excel
-on:
-  pull_request:
-    types: [closed]
-    
-permissions:
-  contents: write  
+# After selecting repos of interest and the filtering conditions in workflow_input.yaml, run this workflow in actions.
+name: Generate Code review Document
 
+on: [workflow_dispatch, workflow_call, push]
+# on:
+#   push:
+#     paths:
+#       - '**/workflow_input.yaml'
+#       - '**/git_repos.yaml'
+      
+permissions:
+  pull-requests: read
+  contents: read
+  security-events: write
+  actions: write
 jobs:
-  log-new-sheet:
-    if: github.event.pull_request.merged == true
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code (with full history)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: pip install openpyxl
-      - name: Log new sheet info
-        run: python .github/scripts/log_new_sheet.py
-      - name: Commit and push Excel file
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull origin main
-          git add new_sheet.xlsx
-          git commit -m "Update new sheet log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    uses: riya-morankar/demo2/.github/workflows/code_rev_doc.yml@main
+    secrets: inherit
+
+
+
+
+
+
+
+
+# name: Log New Sheet to Excel
+# on:
+#   pull_request:
+#     types: [closed]
+    
+# permissions:
+#   contents: write  
+
+# jobs:
+#   log-new-sheet:
+#     if: github.event.pull_request.merged == true
+#     runs-on: windows-latest
+#     steps:
+#       - name: Checkout code (with full history)
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0 
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.10'
+#       - name: Install dependencies
+#         run: pip install openpyxl
+#       - name: Log new sheet info
+#         run: python .github/scripts/log_new_sheet.py
+#       - name: Commit and push Excel file
+#         run: |
+#           git config user.name "github-actions[bot]"
+#           git config user.email "github-actions[bot]@users.noreply.github.com"
+#           git pull origin main
+#           git add new_sheet.xlsx
+#           git commit -m "Update new sheet log from #${{ github.event.pull_request.number }}" || echo "No changes to commit"
+#           git push
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
